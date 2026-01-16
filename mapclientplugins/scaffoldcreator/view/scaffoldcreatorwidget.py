@@ -166,6 +166,7 @@ class ScaffoldCreatorWidget(QtWidgets.QMainWindow):
         self._scaffold_settings_ui.scale_lineEdit.editingFinished.connect(self._scaleLineEditChanged)
         self._scaffold_settings_ui.translation_lineEdit.editingFinished.connect(self._translationLineEditChanged)
         self._scaffold_settings_ui.applyTransformation_pushButton.clicked.connect(self._applyTransformationButtonPressed)
+        self._scaffold_settings_ui.autoAlignTransformation_pushButton.clicked.connect(self._autoAlignTransformationButtonPressed)
         self._display_settings_ui.displayDataGroup_fieldChooser.setNullObjectName('-')
         self._display_settings_ui.displayDataGroup_fieldChooser.setRegion(self._segmentation_data_model.getRegion())
         self._display_settings_ui.displayDataGroup_fieldChooser.setConditional(field_is_managed_group)
@@ -698,6 +699,10 @@ class ScaffoldCreatorWidget(QtWidgets.QMainWindow):
 
     def _applyTransformationButtonPressed(self):
         self._scaffold_model.applyTransformation(self._display_settings_ui.displayModelCoordinates_fieldChooser.getField())
+        self._transformationChanged()
+
+    def _autoAlignTransformationButtonPressed(self):
+        self._scaffold_model.autoAlignTransformation()
         self._transformationChanged()
 
     def _displayDataGroupChanged(self, index):
