@@ -702,8 +702,36 @@ class ScaffoldCreatorWidget(QtWidgets.QMainWindow):
         self._transformationChanged()
 
     def _autoAlignTransformationButtonPressed(self):
-        self._scaffold_model.autoAlignTransformation()
-        self._transformationChanged()
+        # Create dialog
+        reply = QtWidgets.QDialog(self)
+        reply.setWindowTitle('Confirm action')
+        layout = QtWidgets.QVBoxLayout(reply)
+        # Add text
+        textLabel = QtWidgets.QLabel('Auto align?')
+        textLabel.setWordWrap(True)
+        layout.addWidget(textLabel)
+        layout.addSpacing(10)
+        # Add checkboxes for options
+        alignMarkers = QtWidgets.QCheckBox('Align to markers')
+        alignMarkers.setChecked(True)
+        alignGroups = QtWidgets.QCheckBox('Align groups')
+        alignGroups.setChecked(False)
+        layout.addWidget(alignGroups)
+        layout.addWidget(alignMarkers)
+        layout.addSpacing(10)
+        # Add standard buttons
+        buttons = QtWidgets.QDialogButtonBox(
+            QtWidgets.QDialogButtonBox.StandardButton.Yes | QtWidgets.QDialogButtonBox.StandardButton.No
+        )
+        layout.addWidget(buttons)   
+        buttons.accepted.connect(reply.accept)
+        buttons.rejected.connect(reply.reject)     
+        # Execute dialog
+        if reply.exec() == QtWidgets.QDialog.Accepted:
+            self._scaffold_model.autoAlignTransformation(
+                alignMarkers.isChecked(), alignGroups.isChecked()
+                )
+            self._transformationChanged()
 
     def _displayDataGroupChanged(self, index):
         """
