@@ -739,11 +739,8 @@ class ScaffoldCreatorModel:
 
     def initializeAutoAlignTransformation(self):
         """
-        Docstring for initializeAutoAlignTransformation
-        
-        :param self: Description
+        Initialize the fitter for the automatic align process
         """
-        # scaffoldPackage = self._scaffoldPackages[-1]
         scaffold_region = self._region
         # Load data into the current region (copied from load_vagus_data in 3d_nerve1)
         # This way of loading data is probably not completely right? Need to consult for a better way
@@ -772,35 +769,11 @@ class ScaffoldCreatorModel:
         self.fitter.initializeFit()
         fit1 = FitterStepAlign()
         self.fitter.addFitterStep(fit1)
-        return None
+        return fit1.canAutoAlign()
     
-    # def canAutoAlignGroups(self): 
-    #     """
-    #     Docstring for canAutoAlignGroups
-        
-    #     :param self: Description
-    #     """
-    #     fitterSteps = self.fitter.getFitterSteps()
-    #     alignStep = fitterSteps[-1]
-    #     canAlignGroups = alignStep.canAlignGroups()
-    #     return canAlignGroups
-
-    # def canAutoAlignGroups(self): 
-    #     """
-    #     Docstring for canAutoAlignGroups
-        
-    #     :param self: Description
-    #     """
-    #     fitterSteps = self.fitter.getFitterSteps()
-    #     alignStep = fitterSteps[-1]
-    #     canAlignMarkers = alignStep.canAlignMarkers()
-    #     return canAlignMarkers
-
     def runAutoAlignTransformation(self):
         """
-        Docstring for runAutoAlignTransformation
-        
-        :param self: Description
+        Run the align step and update visual settings
         """
         scaffoldPackage = self._scaffoldPackages[-1]
         fit1 = self.fitter.getFitterSteps()[-1]
