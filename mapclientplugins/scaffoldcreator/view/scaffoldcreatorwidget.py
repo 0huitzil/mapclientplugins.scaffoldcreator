@@ -706,31 +706,48 @@ class ScaffoldCreatorWidget(QtWidgets.QMainWindow):
         reply = QtWidgets.QDialog(self)
         reply.setWindowTitle('Confirm action')
         layout = QtWidgets.QVBoxLayout(reply)
-        # Add text
-        textLabel = QtWidgets.QLabel('Auto align?')
-        textLabel.setWordWrap(True)
-        layout.addWidget(textLabel)
-        layout.addSpacing(10)
-        # Add checkboxes for options
-        alignMarkers = QtWidgets.QCheckBox('Align to markers')
-        alignMarkers.setChecked(True)
-        alignGroups = QtWidgets.QCheckBox('Align groups')
-        alignGroups.setChecked(False)
-        layout.addWidget(alignGroups)
-        layout.addWidget(alignMarkers)
-        layout.addSpacing(10)
-        # Add standard buttons
-        buttons = QtWidgets.QDialogButtonBox(
-            QtWidgets.QDialogButtonBox.StandardButton.Yes | QtWidgets.QDialogButtonBox.StandardButton.No
-        )
-        layout.addWidget(buttons)   
-        buttons.accepted.connect(reply.accept)
-        buttons.rejected.connect(reply.reject)     
+        # If no data supply, send message 
+        hasData = self._segmentation_data_model.hasData()
+        if not hasData:
+            # Add text
+            textLabel = QtWidgets.QLabel('No data file supplied')
+            textLabel.setWordWrap(True)
+            layout.addWidget(textLabel)
+            layout.addSpacing(10)
+            # add Ok Button
+            buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.StandardButton.Ok)
+            buttons.accepted.connect(reply.reject)    
+            layout.addWidget(buttons)
+        else:
+            # Initilize fitter 
+            self._scaffold_model.initializeAutoAlignTransformation()
+            # Verify if markers and/or groups can be aligned
+            # canAlignMarkers = self._scaffold_model.canAutoAlignGroups()
+            # canAlignGroups = self._scaffold_model.canAutoAlignGroups() 
+            # Add text
+            textLabel = QtWidgets.QLabel('Auto align?')
+            textLabel.setWordWrap(True)
+            layout.addWidget(textLabel)
+            layout.addSpacing(10)
+            # Add checkboxes for options
+            # alignMarkers = QtWidgets.QCheckBox('Align to markers')
+            # alignMarkers.setChecked(True)
+            # alignGroups = QtWidgets.QCheckBox('Align groups')
+            # alignGroups.setChecked(False)
+            # layout.addWidget(alignGroups)
+            # layout.addWidget(alignMarkers)
+            # layout.addSpacing(10)
+            # Add standard buttons
+            buttons = QtWidgets.QDialogButtonBox(
+                QtWidgets.QDialogButtonBox.StandardButton.Yes | QtWidgets.QDialogButtonBox.StandardButton.No
+            )
+            layout.addWidget(buttons)   
+            buttons.accepted.connect(reply.accept)
+            buttons.rejected.connect(reply.reject)     
         # Execute dialog
         if reply.exec() == QtWidgets.QDialog.Accepted:
-            self._scaffold_model.autoAlignTransformation(
-                alignMarkers.isChecked(), alignGroups.isChecked()
-                )
+            # input_zinc_data_file = self._segmentation_data_model._data_filename
+            self._scaffold_model.runAutoAlignTransformation()
             self._transformationChanged()
 
     def _displayDataGroupChanged(self, index):
